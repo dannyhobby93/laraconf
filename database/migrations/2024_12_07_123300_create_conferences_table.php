@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('end_date');
             $table->string('status');
             $table->string('region');
-            $table->foreignId('venue_id');
+            $table->foreignId('venue_id')->nullable();
             $table->timestamps();
         });
     }
