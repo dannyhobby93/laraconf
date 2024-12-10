@@ -2,16 +2,20 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TalkResource\Pages;
-use App\Filament\Resources\TalkResource\RelationManagers;
-use App\Models\Talk;
+use App\Enums\TalkLength;
+use App\Enums\TalkStatus;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Talk;
 use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\TalkResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\TalkResource\RelationManagers;
 
 class TalkResource extends Resource
 {
@@ -40,18 +44,30 @@ class TalkResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
+                    ->sortable()
+                    ->searchable()
+                    ->description(function (Talk $record) {
+                        return Str::limit($record->abstract, 40, '...');
+                    }),
+                Tables\Columns\ImageColumn::make('speaker.avatar')
+                    ->label('Avatar')
+                    ->circular()
+                    ->defaultImageUrl(function (Talk $record) {
+                        return 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=' . urlencode($record->speaker->name);
+                    }),
                 Tables\Columns\TextColumn::make('speaker.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+                Tables\Columns\ToggleColumn::make('new_talk'),
+                Tables\Columns\TextColumn::make('status')
+                    ->color(function (TalkStatus $state) {
+                        return $state->getColor();
+                    })
+                    ->badge(),
+                IconColumn::make('length')
+                    ->icon(function (TalkLength $state) {
+                        return $state->getIcon();
+                    }),
             ])
             ->filters([
                 //
