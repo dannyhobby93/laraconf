@@ -9,10 +9,23 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Speaker extends Model
 {
     use HasFactory;
+
+    const QUALIFICATIONS =
+        [
+            'business-leader' => 'Business Leader',
+            'charisma' => 'Charismatic Speaker',
+            'first-time' => 'First Time Speaker',
+            'hometown-hero' => 'Home Town Hero',
+            'open-source' => 'Open Source Contributer / Author',
+            'youtuber' => 'YouTuber',
+            'influencer' => 'Social Media Influencer',
+            'laracasts' => 'Laracast Author'
+        ];
 
     protected $casts = [
         'id' => 'integer',
@@ -22,6 +35,11 @@ class Speaker extends Model
     public function conferences(): BelongsToMany
     {
         return $this->belongsToMany(Conference::class);
+    }
+
+    public function talks(): HasMany
+    {
+        return $this->hasMany(Talk::class);
     }
 
     public static function getForm(): array
@@ -48,26 +66,8 @@ class Speaker extends Model
                 ->columns(3)
                 ->searchable()
                 ->bulkToggleable()
-                ->options([
-                    'business-leader' => 'Business Leader',
-                    'charisma' => 'Charismatic Speaker',
-                    'first-time' => 'First Time Speaker',
-                    'hometown-hero' => 'Home Town Hero',
-                    'open-source' => 'Open Source Contributer / Author',
-                    'youtuber' => 'YouTuber',
-                    'influencer' => 'Social Media Influencer',
-                    'laracasts' => 'Laracast Author'
-                ])
-                ->descriptions([
-                    'business-leader' => 'Business Leader',
-                    'charisma' => 'Charismatic Speaker',
-                    'first-time' => 'First Time Speaker',
-                    'hometown-hero' => 'Home Town Hero',
-                    'open-source' => 'Open Source Contributer / Author',
-                    'youtuber' => 'YouTuber',
-                    'influencer' => 'Social Media Influencer',
-                    'laracasts' => 'Laracast Author'
-                ])
+                ->options(self::QUALIFICATIONS)
+                ->descriptions(self::QUALIFICATIONS)
         ];
     }
 }
