@@ -29,4 +29,17 @@ class Talk extends Model
     {
         return $this->belongsToMany(Conference::class);
     }
+
+    public function approve(): void
+    {
+        $this->status = TalkStatus::APPROVED;
+        // email speaker to notify
+        $this->save();
+    }
+    public function reject(): void
+    {
+        $this->status = TalkStatus::REJECTED;
+        // email speaker to notify
+        $this->save();
+    }
 }
