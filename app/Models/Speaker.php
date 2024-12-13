@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
@@ -57,7 +58,7 @@ class Speaker extends Model
                 ->email()
                 ->required()
                 ->maxLength(255),
-            Textarea::make('bio')
+            RichEditor::make('bio')
                 ->columnSpanFull(),
             TextInput::make('twitter_handle')
                 ->maxLength(255),
