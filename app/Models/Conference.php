@@ -26,6 +26,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Conference extends Model
 {
@@ -54,66 +55,14 @@ class Conference extends Model
         return $this->belongsToMany(Talk::class);
     }
 
+    public function attendees(): HasMany
+    {
+        return $this->hasMany(Attendee::class);
+    }
+
     public static function getForm(): array
     {
         return [
-            // Tabs::make()
-            //     ->columnSpanFull()
-            //     ->tabs([
-            //         Tab::make('Conference Details')
-            //             ->schema([
-            //                 TextInput::make('name')
-            //                     ->columnSpanFull()
-            //                     ->label('Conference')
-            //                     ->required()
-            //                     ->maxLength(255),
-            //                 MarkdownEditor::make('description')
-            //                     ->columnSpanFull()
-            //                     ->required()
-            //                     ->maxLength(255),
-            //                 DateTimePicker::make('start_date')
-            //                     ->required(),
-            //                 DateTimePicker::make('end_date')
-            //                     ->required(),
-            //                 Fieldset::make('Status')
-            //                     ->columns(1)
-            //                     ->schema([
-            //                         Select::make('status')
-            //                             ->options([
-            //                                 'draft' => 'Draft',
-            //                                 'published' => 'Published',
-            //                                 'archived' => 'Archived'
-            //                             ])
-            //                             ->required(),
-            //                         Toggle::make('is_published')
-            //                             ->default(true),
-            //                     ])
-            //             ]),
-            //         Tab::make('Location')
-            //             ->schema([
-            //                 Select::make('region')
-            //                     ->live()
-            //                     ->afterStateUpdated(
-            //                         function (Set $set) {
-            //                             $set('venue_id', '');
-            //                         }
-            //                     )
-            //                     ->enum(Region::class)
-            //                     ->options(Region::class),
-            //                 Select::make('venue_id')
-            //                     ->searchable()
-            //                     ->preload() // small data
-            //                     ->createOptionForm(Venue::getForm())
-            //                     ->editOptionForm(Venue::getForm())
-            //                     ->relationship(
-            //                         'venue',
-            //                         'name',
-            //                         modifyQueryUsing: function (Builder $query, Get $get) {
-            //                             return $query->where('region', $get('region'));
-            //                         }
-            //                     ),
-            //             ])
-            //     ]),
             Section::make('Conference Details')
                 ->collapsible()
                 ->description('This is a description')
