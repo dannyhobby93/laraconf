@@ -4,9 +4,13 @@ namespace App\Models;
 
 use App\Enums\TalkLength;
 use App\Enums\TalkStatus;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Talk extends Model
@@ -41,5 +45,24 @@ class Talk extends Model
         $this->status = TalkStatus::REJECTED;
         // email speaker to notify
         $this->save();
+    }
+
+    public static function getForm($speakerId = null): array
+    {
+        return [
+            TextInput::make('title')
+                ->required()
+                ->maxLength(255),
+            RichEditor::make('abstract')
+                ->required()
+                ->maxLength(65535)
+                ->columnSpanFull(),
+            Select::make('speaker_id')
+                ->hidden(function () use ($speakerId) {
+                    return $speakerId !== null;
+                })
+                ->relationship('speaker', 'name')
+                ->required(),
+        ];
     }
 }
